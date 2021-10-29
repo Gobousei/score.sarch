@@ -1,16 +1,13 @@
 <!DOCTYPE html>
-<html>
 <head>
 <link rel="stylesheet" href="css/style.css">
 </head>
-
-    </head>
     <body>
-<label><input type="text" id="text1"></label>
-<input type="button" value="検索" id="checkButton">
-</p>
-
-<p id="msg"></p>
+  <form id="form1" action="#">
+    <input type="text" id="input-message">
+    <input type="button" onclick="showMessage()" value="送信">
+  </form>
+  <p id="output-message"></p>
 <script scr="js/script.js"></script>
 </body>
 </html>

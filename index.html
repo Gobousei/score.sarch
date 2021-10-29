@@ -8,6 +8,16 @@
     <input type="button" onclick="showMessage()" value="送信">
   </form>
   <p id="output-message"></p>
-<script scr="js/script.js"></script>
+        <script language="javascript" type="text/javascript">
+    const showMessage = () => {
+      const textbox = document.getElementById("input-message");
+      const inputValue = textbox.value;
+
+      //テキストボックスの値を使って、出力するメッセージを生成する
+      const output = "入力された内容は「" + inputValue + "」です。";
+      //出力用のp要素にメッセージを表示
+      document.getElementById("output-message").innerHTML = output;
+    }
+  </script>
 </body>
 </html>

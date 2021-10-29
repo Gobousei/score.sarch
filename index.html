@@ -1,14 +1,16 @@
 <!DOCTYPE html>
+<html>
 <head>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="utf-8"/>
+  <title>sample1</title>
 </head>
-    <body>
+<body>
   <form id="form1" action="#">
     <input type="text" id="input-message">
     <input type="button" onclick="showMessage()" value="送信">
   </form>
   <p id="output-message"></p>
-        <script language="javascript" type="text/javascript">
+  <script language="javascript" type="text/javascript">
     const showMessage = () => {
       const textbox = document.getElementById("input-message");
       const inputValue = textbox.value;

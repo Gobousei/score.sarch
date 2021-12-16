@@ -5,12 +5,213 @@
   <title>sample1</title>
 </head>
 <body>
-  <form id="form1" action="#">
-    <input type="text" id="input-message">
-    <input type="button" onclick="js/script.js" value="送信">
-  </form>
-  <p id="output-message"></p>
-  <script src="js./script.js"></script>
-  </script>
+  <script>
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.TilePane;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+public class Sample extends Application {
+
+  // 画面上部ペイン
+  FlowPane flowTop;
+
+  // 画面下部ペイン
+  FlowPane flowBottom;
+
+  // 分数選択コンボボックス
+  ComboBox<Integer> comboMin;
+
+  // 分ラベル
+  Label labelMin = new Label("分");
+
+  // 秒数選択コンボボックス
+  ComboBox<Integer> comboSec;
+
+  // 秒ラベル
+  Label labelSec = new Label("秒");
+
+  // スタートボタン
+  Button buttonStart = new Button("スタート");
+
+  // リセットボタン
+  Button buttonReset = new Button("リセット");
+
+  // タイマー部分 分表示ラベル
+  Label TimerMin = new Label();
+
+  // タイマー部分 分ラベル
+  Label labelTimerMin = new Label("分");
+
+  // タイマー部分 秒表示ラベル
+  Label TimerSec = new Label();
+
+  // タイマー部分 秒ラベル
+  Label labelTimerSec = new Label("秒");
+
+  // タイマー部分 終了ラベル
+  Label labelTimerFinish = new Label("");
+
+  //アニメーションクラス
+  Timeline timer;
+
+  public static void main(String[] args) {
+    launch();
+  }
+
+  @SuppressWarnings("static-access")
+  public void start(Stage stage) {
+
+    ObservableList<Integer> data = FXCollections.observableArrayList();
+
+    for (int i = 0; i < 60; i++) {
+      data.add(i, i);
+    }
+
+    // 分数選択コンボボックス
+    comboMin = new ComboBox<Integer>(data);
+    comboMin.setOnAction((ActionEvent) -> {
+
+      TimerMin.setText(String.format("%02d", comboMin.getValue()));
+    });
+    comboMin.setValue(0);
+
+    // 秒数選択コンボボックス
+    comboSec = new ComboBox<Integer>(data);
+    comboSec.setOnAction((ActionEvent) -> {
+
+      TimerSec.setText(String.format("%02d", comboSec.getValue()));
+
+    });
+
+    reset();
+
+    // 画面上部ペインを作成
+    flowTop = new FlowPane();
+    flowTop.setPadding(new Insets(10, 10, 10, 10));
+    flowTop.setVgap(1);
+    flowTop.setHgap(1);
+
+    // 画面上部の要素をペインへ配置
+    flowTop.getChildren().add(comboMin);
+    flowTop.getChildren().add(labelMin);
+    flowTop.getChildren().add(comboSec);
+    flowTop.getChildren().add(labelSec);
+    flowTop.getChildren().add(buttonStart);
+    flowTop.getChildren().add(buttonReset);
+
+    // 画面下部ペインを作成
+    flowBottom = new FlowPane();
+
+    TimerMin.setFont(new Font(50));
+    TimerMin.setText("00");
+
+    TimerSec.setFont(new Font(50));
+    TimerSec.setText("00");
+
+    // 画面下部要素を追加
+    flowBottom.getChildren().add(TimerMin);
+    flowBottom.getChildren().add(labelTimerMin);
+    flowBottom.getChildren().add(TimerSec);
+    flowBottom.getChildren().add(labelTimerSec);
+    flowBottom.getChildren().add(labelTimerFinish);
+
+    buttonStart.setOnAction((ActionEvent) -> {
+
+      buttonStart.setDisable(true);
+      buttonReset.setDisable(false);
+
+      // アニメーションの定義（1000ミリ秒間隔で描写する）
+      timer = new Timeline(new KeyFrame(Duration.millis(1000), new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
+          // 秒数、分数の繰り下げ
+          if (TimerSec.getText().equals("00")) {
+
+            if (TimerMin.getText().equals("00")) {
+
+              // 全て0になったら終了ラベルを表示
+              labelTimerFinish.setText("　　　終了！！");
+
+            } else {
+              TimerSec.setText("59");
+              TimerMin.setText(String.format("%02d", Integer.parseInt(TimerMin.getText()) - 1));
+            }
+
+          } else {
+            TimerSec.setText(String.format("%02d", Integer.parseInt(TimerSec.getText()) - 1));
+          }
+
+        }
+      }));
+
+      // アニメーションを無限に繰り返す
+      timer.setCycleCount(Timeline.INDEFINITE);
+
+      // アニメーション開始
+      timer.play();
+    });
+
+    // リセットボタンが押下された場合
+    buttonReset.setOnAction((ActionEvent) -> {
+
+      // タイマーしょ終了する
+      timer.stop();
+
+      // 初期化処理を行う
+      reset();
+    });
+
+    // ペインに画面上部、下部のペインを追加
+    TilePane tile = new TilePane(Orientation.VERTICAL);
+    tile.getChildren().add(flowTop);
+    tile.getChildren().add(flowBottom);
+
+    // 画面にスタック・ペインを追加
+    stage.setScene(new Scene(tile, 300, 200));
+
+    // 画面の表示
+    stage.show();
+
+  }
+
+  void reset() {
+
+    // リセットボタンを非活性化
+    buttonReset.setDisable(true);
+
+    // スタートボタンを活性化
+    buttonStart.setDisable(false);
+
+    // プルダウンの値を初期化
+    comboMin.setValue(0);
+    comboSec.setValue(0);
+
+    // タイマー部分の表示を初期化
+    TimerSec.setText("00");
+    TimerMin.setText("00");
+
+    // 終了ラベルを初期化
+    labelTimerFinish.setText("");
+
+  }
+
+}
+</script>
 </body>
 </html>
